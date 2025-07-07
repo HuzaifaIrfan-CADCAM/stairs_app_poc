@@ -5,6 +5,8 @@
 from typing import Literal
 import math
 
+from pprint import pprint
+
 # Manual Stair Calculator
 # Input:
 # Total Rise [A] (ex. 56.75)	
@@ -37,6 +39,8 @@ def stair_calculator(
     Returns:
         Dictionary containing all calculated stair dimensions
     """
+
+    print(f"stair_calculator total_rise:{total_rise} total_run:{total_run} num_steps:{num_steps} tread_thickness:{tread_thickness} mount_type:{mount_type}")
     # Validate inputs
     if not (12 <= total_rise <= 500):
         raise ValueError("Total Rise must be between 12 and 500 inches")
@@ -89,7 +93,7 @@ def stair_calculator(
         "mount_type": mount_type,
         "rise_per_step": round(rise_per_step, 2),
         "run_per_step": round(run_per_step, 2),
-        "first_step_height": round(first_step_height, 2),
+        "first_step_riser_height": round(first_step_height, 2),
         "stringer_placement": round(stringer_parameter, 2),
         "stringer_length": round(stringer_length, 2),
         "stair_angle": round(angle_deg, 1),
@@ -140,6 +144,7 @@ def auto_stair_calculator(
     Returns:
         Dictionary containing all calculated stair dimensions
     """
+    print(f"auto_stair_calculator total_rise:{total_rise} step_height:{step_height} tread_thickness:{tread_thickness} tread_depth:{tread_depth} mount_type:{mount_type}")
     # Validate inputs
     if not (12 <= total_rise <= 500):
         raise ValueError("Total Rise must be between 12 and 500 inches")
@@ -202,14 +207,14 @@ def auto_stair_calculator(
     # Prepare results
     results = {
         "total_rise": total_rise,
-        "optimal_step_height": step_height,
-        "actual_step_height": round(actual_step_height, 2),
+        "optimal_step_riser_height": step_height,
+        "actual_step_riser_height": round(actual_step_height, 2),
         "num_steps_risers": num_steps,
         "num_treads": num_treads,
         "tread_thickness": tread_thickness,
         "tread_depth": tread_depth,
         "mount_type": mount_type,
-        "first_step_height": round(first_step_height, 2),
+        "first_step_riser_height": round(first_step_height, 2),
         "stringer_placement_last_step_parameter": round(last_step_parameter, 2),
         "total_run": round(total_run, 2),
         "stringer_length": round(stringer_length, 2),
@@ -231,7 +236,7 @@ def main():
         tread_depth=12.0,
         mount_type="flush"
     )
-    print(result)
+    pprint(result)
 
 if __name__ == "__main__":
     main()
