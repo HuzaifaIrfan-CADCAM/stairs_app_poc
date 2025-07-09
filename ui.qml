@@ -129,7 +129,7 @@ ApplicationWindow {
                         text: "Generate PDF"
                     }
                     Button {
-                        text: "Export DCode"
+                        text: "Export G-Code"
                     }
                 }
                 RowLayout {

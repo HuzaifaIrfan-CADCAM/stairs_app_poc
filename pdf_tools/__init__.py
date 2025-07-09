@@ -6,15 +6,15 @@ from reportlab.lib.units import inch
 import os
 
 
-def create_cut_list():
+def create_cut_list(output_folder, job_name, builder_name, total_rise, width,riser_height, num_riser, num_tread, tread_depth, total_run, cut_list_data):
 
-    os.makedirs("output", exist_ok=True)
+    os.makedirs(output_folder, exist_ok=True)
 
     # PDF Setup
-    file_name = "output/crestmont_cut_list.pdf"
+    file_output = f"{output_folder}/{job_name}_cut_list.pdf"
 
     # Setup
-    doc = SimpleDocTemplate(file_name, pagesize=LETTER,
+    doc = SimpleDocTemplate(file_output, pagesize=LETTER,
                             rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=18)
     styles = getSampleStyleSheet()
     elements = []
@@ -32,21 +32,21 @@ def create_cut_list():
 
     # Title and Job Info
     elements.append(Spacer(1, 12))
-    elements.append(Paragraph("<b>Cut List - Crestmont Job</b>", styles['Title']))
-    elements.append(Paragraph("Builder: Smith Builders", styles['Normal']))
-    elements.append(Paragraph('Total Rise: 122", Width: 36 3/4"', styles['Normal']))
+    elements.append(Paragraph(f"<b>Cut List - {job_name} Job</b>", styles['Title']))
+    elements.append(Paragraph(f"Builder: {builder_name}", styles['Normal']))
+    elements.append(Paragraph(f'Total Rise: {total_rise}", Width: {width}"', styles['Normal']))
     elements.append(Spacer(1, 12))
 
     # Stair Layout Summary
     elements.append(Paragraph("<b>Stair Layout Summary</b>", styles['Heading3']))
     summary_items = [
-        ("Total Rise", '122"'),
-        ("Stair Width", '36 3/4"'),
-        ("Riser Height", '7 5/8"'),
-        ("Number of Risers", '16'),
-        ("Number of Treads", '15'),
-        ("Run Depth (per tread)", '11 1/2"'),
-        ("Total Stair Run", '172 1/2"'),
+        ("Total Rise", f'{total_rise}"'),
+        ("Stair Width", f'{width}"'),
+        ("Riser Height", f'{riser_height}"'),
+        ("Number of Risers", f'{num_riser}'),
+        ("Number of Treads", f'{num_tread}'),
+        ("Run Depth (per tread)", f'{tread_depth}"'),
+        ("Total Stair Run", f'{total_run}"'),
     ]
 
     for item, value in summary_items:
@@ -54,13 +54,13 @@ def create_cut_list():
     elements.append(Spacer(1, 12))
 
     # Cut List Table
-    cut_list_data = [
-        ["Part", "Qty", "Material", "Dimension"],
-        ["Treads", "15", '1" Plywood', '36 3/4"'],
-        ["Risers", "15", '3/8" Plywood', '36 3/4"'],
-        ["Top Riser", "1", '5/8" Plywood', '36 3/4"'],
-        ["Stringers", "2", 'LSL or 2x12', '122"'],
-    ]
+    # cut_list_data = [
+    #     ["Part", "Qty", "Material", "Dimension"],
+    #     ["Treads", "15", '1" Plywood', '36 3/4"'],
+    #     ["Risers", "15", '3/8" Plywood', '36 3/4"'],
+    #     ["Top Riser", "1", '5/8" Plywood', '36 3/4"'],
+    #     ["Stringers", "2", 'LSL or 2x12', '122"'],
+    # ]
 
     table = Table(cut_list_data, colWidths=[1.5 * inch] * 4)
     table.setStyle(TableStyle([
@@ -76,4 +76,4 @@ def create_cut_list():
 
     # Build PDF
     doc.build(elements)
-    print("PDF created: crestmont_cut_list.pdf")
+    print(f"PDF created: {file_output}")
