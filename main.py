@@ -13,6 +13,12 @@ from stair_calculator import auto_stair_calculator, stair_calculator
 from pdf_tools import create_cut_list
 
 
+
+from freecad_doc import FreecadDoc
+from freecad_doc.stair_stringer import create_stair_stringer, create_job
+
+
+
 class Backend(QObject):
     cutListChanged = pyqtSignal(list)
 
@@ -58,6 +64,37 @@ class Backend(QObject):
 
         
         self.sendCutList()
+
+    @pyqtSlot(str, str, str, str)
+    def export_gcode(self, job_name, builder_name, stair_width, total_rise):
+        print(job_name)
+        print(builder_name)
+        print(stair_width)
+        print(total_rise)
+
+        result = auto_stair_calculator(
+            total_rise=float(total_rise),
+            step_height=7.625,
+            tread_thickness=1.0,
+            tread_depth=11.5,
+            mount_type="standard"
+        )
+        result["width_stair"] = float(stair_width)
+        pprint(result)
+
+
+        freecad_doc=FreecadDoc(doc_name=f"{job_name}_stair_stringer_cnc")
+
+        doc=freecad_doc.doc
+        
+        stair_stringer_body=create_stair_stringer(doc, body_name="stair_stringer", stringer_thickness = 1.5, first_rise_height = result["first_step_riser_height"], rise_height = result["actual_step_riser_height"],num_rise = result["num_steps_risers"], run_depth = result["tread_depth"], num_run = result["num_treads"],  kicker=False, kicker_depth = 5.5, kicker_height = 1.5, stair_angle=result["stair_angle"], back_cut_increase=5, rotate_for_cnc=True)
+        
+        gcode=create_job(doc, stair_stringer_body)
+
+        freecad_doc.save()
+        freecad_doc.export_gcode(gcode)
+        freecad_doc.export_body(stair_stringer_body)
+
 
 
 app = QApplication(sys.argv)
