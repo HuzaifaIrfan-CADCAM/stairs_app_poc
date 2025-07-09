@@ -12,6 +12,18 @@ ApplicationWindow {
     height: 600
     title: "Treads by Design"
 
+    ListModel {
+        id: cutListModel
+    }
+
+    function setCutList(list) {
+        cutListModel.clear()
+        for (var i = 0; i < list.length; i++) {
+            cutListModel.append(list[i])
+        }
+    }
+
+
     Item {
         anchors.fill: parent
 
@@ -34,12 +46,17 @@ ApplicationWindow {
                     Layout.fillWidth: true
 
                     placeholderText: "Job Name"
+                    text:"Crestmont"
+                    id: job_name
                 }
 
                 TextField {
                     Layout.fillWidth: true
 
                     placeholderText: "Builder Name"
+
+                    text:"Smith Builders"
+                    id: builder_name
                 }
 
                 ColumnLayout {
@@ -61,33 +78,33 @@ ApplicationWindow {
                         text: "Nosing"
                     }
                     ComboBox {
-                        model: ["Straight", "Curved"]
+                        model: ["None", "Straight", "Curved"]
                         currentIndex: 0
                         Layout.fillWidth: true
                         editable: false
                     }
                 }
 
-                RowLayout {
-                    spacing: 10
-                    Label {
-                        text: "Stringer Type"
-                    }
-                    Switch {
-                        checked: true
-                    }
-                }
+                // RowLayout {
+                //     spacing: 10
+                //     Label {
+                //         text: "Stringer Type"
+                //     }
+                //     Switch {
+                //         checked: true
+                //     }
+                // }
 
-                ColumnLayout {
-                    spacing: 2
-                    Label {
-                        text: "Material"
-                    }
-                    ComboBox {
-                        model: ["SSL", "PT", "MS"]
-                        Layout.fillWidth: true
-                    }
-                }
+                // ColumnLayout {
+                //     spacing: 2
+                //     Label {
+                //         text: "Material"
+                //     }
+                //     ComboBox {
+                //         model: ["SSL", "PT", "MS"]
+                //         Layout.fillWidth: true
+                //     }
+                // }
 
                 RowLayout {
                     spacing: 10
@@ -98,7 +115,9 @@ ApplicationWindow {
                         Layout.fillWidth: true
 
                         placeholderText: "44.5"
+                        text:"36.75"
                         width: 80
+                        id: stair_width
                     }
                     Label {
                         text: "in"
@@ -115,6 +134,8 @@ ApplicationWindow {
 
                         placeholderText: "Enter height"
                         width: 100
+                        text:"122"
+                        id: total_rise
                     }
                     Label {
                         text: "in"
@@ -122,24 +143,29 @@ ApplicationWindow {
                 }
 
                 RowLayout {
+                    Layout.alignment: Qt.AlignHCenter
 
-                    anchors.horizontalCenter: parent.horizontalCenter
                     spacing: 10
                     Button {
                         text: "Generate PDF"
+                        onClicked: backend.generate_pdf(job_name.text, builder_name.text, stair_width.text, total_rise.text)
                     }
                     Button {
                         text: "Export G-Code"
+                        onClicked: backend.export_gcode(job_name.text, builder_name.text, stair_width.text, total_rise.text)
                     }
                 }
                 RowLayout {
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    Layout.alignment: Qt.AlignHCenter
+
                     spacing: 10
                     Button {
                         text: "Save Job"
+                        onClicked: backend.save_job()
                     }
                     Button {
                         text: "Duplicate Job"
+                        onClicked: backend.duplicate_job()
                     }
                 }
             }
@@ -173,9 +199,19 @@ ApplicationWindow {
                         font.pixelSize: 16
                     }
 
-                    CutListTable {}
+                    CutListTableView {
+                        model: cutListModel
+                    }
                 }
             }
+        }
+    }
+
+    Connections {
+        target: backend
+
+        function cutListChanged(list) {
+            setCutList(list)
         }
     }
 }
