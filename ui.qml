@@ -13,6 +13,7 @@ ApplicationWindow {
     height: 600
     title: "Treads by Design"
 
+    property string stairImageData: ""
 
     ListModel {
         id: cutListModel
@@ -192,19 +193,37 @@ ApplicationWindow {
                 spacing: 20
                 Layout.fillWidth: true
 
-                Rectangle {
-                    width: 600
-                    height: 250
-                    color: "#f5f5f5"
-                    border.color: "gray"
-                    radius: 5
-                    Text {
-                        anchors.centerIn: parent
-                        text: "Stair Drawing"
-                        color: "#888"
-                        font.pixelSize: 18
-                    }
-                }
+                // Rectangle {
+                //     width: 600
+                //     height: 250
+                //     color: "#f5f5f5"
+                //     border.color: "gray"
+                //     radius: 5
+                //     Text {
+                //         anchors.centerIn: parent
+                //         text: "Stair Drawing"
+                //         color: "#888"
+                //         font.pixelSize: 18
+                //     }
+                // }
+
+
+                    Image {
+        id: stairImage
+        source: stairImageData
+        fillMode: Image.PreserveAspectFit
+        asynchronous: true
+        
+
+        // Fill width of layout
+        // Layout.fillWidth: true
+        width: 10//parent.width
+
+        // Maintain aspect ratio
+        // Set height proportionally if you want:
+        // height: width * (originalHeight / originalWidth)
+        // Or let PreserveAspectFit handle it automatically
+    }
 
                 RowLayout {
                     spacing: 10
@@ -345,6 +364,11 @@ ApplicationWindow {
         function onCutListChanged(list) {
             root.setCutList(list)
             setCutList(list)
+        }
+
+        function onImageReady(base64Data) {
+            root.stairImageData = base64Data
+            console.log("✅ Image received and updated.")
         }
         
     }
