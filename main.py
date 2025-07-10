@@ -21,18 +21,12 @@ from freecad_doc.stair_stringer import create_stair_stringer, create_job
 
 class Backend(QObject):
     cutListChanged = pyqtSignal(list)
-    display_stair=pyqtSignal(float,float, float,int,int,float,float)
+    displayStair=pyqtSignal(float,float, float,int,int,float,float)
+
+    message = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
-
-    def sendCutList(self):
-        cut_list = [
-            { "part": "Treads", "qty": "6", "dimensions": "34 1/2'' x 10" },
-            { "part": "Risers", "qty": "7", "dimensions": "34 1/2'' x 7 1/2''" },
-            { "part": "Stringers", "qty": "2", "dimensions": "16 3/4'' x 139''" }
-        ]
-        self.cutListChanged.emit(cut_list)
 
 
     @pyqtSlot(str, str, str, str)
@@ -41,6 +35,8 @@ class Backend(QObject):
         print(builder_name)
         print(stair_width)
         print(total_rise)
+
+        
 
         result = auto_stair_calculator(
             total_rise=float(total_rise),
@@ -52,6 +48,8 @@ class Backend(QObject):
         result["width_stair"] = float(stair_width)
         pprint(result)
 
+        self.message.emit("Stair Calculated")
+
 
         cut_list_data = [
             ["Part", "Qty", "Material", "Dimension"],
@@ -61,13 +59,28 @@ class Backend(QObject):
             ["Stringers", "2", 'LSL or 2x12', result["stringer_length"]],
         ]
 
+        
+        self.displayStair.emit(result["total_rise"], result["width_stair"],result["actual_step_riser_height"], result["num_steps_risers"], result["num_treads"], result["tread_depth"], result["total_run"] )
+
+        print("displayStair")
+
+        self.message.emit("Display Stairs")
+
+
         create_cut_list(output_folder= f"output/{job_name}/", job_name=job_name, builder_name=builder_name, total_rise=result["total_rise"], width=result["width_stair"],riser_height=result["actual_step_riser_height"], num_riser=result["num_steps_risers"], num_tread=result["num_treads"], tread_depth=result["tread_depth"], total_run=result["total_run"],cut_list_data=cut_list_data)
 
-        
+        self.message.emit("cut list pdf generated")
 
-        self.display_stair.emit(result["total_rise"], result["width_stair"],result["actual_step_riser_height"], result["num_steps_risers"], result["num_treads"], result["tread_depth"], result["total_run"] )
-        print("display_stair")
-        # self.sendCutList()
+
+        cut_list = [
+            { "part": "Treads", "qty": result["num_treads"], "dimensions": f'{result["width_stair"]}" x {result["tread_depth"]}"' },
+            { "part": "Risers", "qty": result["num_steps_risers"], "dimensions": f'{result["width_stair"]}" x {result["actual_step_riser_height"]}"' },
+            { "part": "Stringers", "qty": 2, "dimensions": f'16 3/4" x {result["stringer_length"]}"' }
+        ]
+        self.cutListChanged.emit(cut_list)
+
+        self.message.emit("Display Cut list")
+
 
     @pyqtSlot(str, str, str, str)
     def export_gcode(self, job_name, builder_name, stair_width, total_rise):

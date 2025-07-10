@@ -7,6 +7,7 @@ import QtQuick.Window 2.15
 import "."  // assumes CutListTable.qml is in the same directory
 
 ApplicationWindow {
+    id: root
     visible: true
     width: 1000
     height: 600
@@ -17,17 +18,17 @@ ApplicationWindow {
         id: cutListModel
         ListElement {
             part: "Treads"
-            qty: 6
+            qty: 0
             dimensions: "34 1/2'' x 10"
         }
         ListElement {
             part: "Risers"
-            qty: 7
+            qty: 0
             dimensions: "34 1/2'' x 7 1/2''"
         }
         ListElement {
             part: "Stringers"
-            qty: 2
+            qty: 0
             dimensions: "16 3/4'' x 139''"
         }
     }
@@ -227,7 +228,18 @@ ApplicationWindow {
                         id: total_run_label
                     }
                     Label {
-                        text: "in"
+                        text: "in "
+                    }
+
+                    Label {
+                        text: " Stair Width"
+                    }
+                    Label {
+                        text:""
+                        id: stair_width_label
+                    }
+                    Label {
+                        text: "in "
                     }
                 }
 
@@ -238,12 +250,46 @@ ApplicationWindow {
                     }
                     Label {
                         text:""
-                        id: num_risers
+                        id: num_risers_label
+                    }
+
+
+                    Label {
+                        text: "Num Tread"
                     }
                     Label {
-                        text: "in"
+                        text:""
+                        id: num_tread_label
                     }
+
                 }
+
+                               RowLayout {
+                    spacing: 10
+
+                    Label {
+                        text: "Riser Height"
+                    }
+                    Label {
+                        text:""
+                        id: risers_height_label
+                    }
+                    Label {
+                        text: "in "
+                    }
+                    
+                    Label {
+                        text: " Tread Depth"
+                    }
+                    Label {
+                        text:""
+                        id: tread_depth_label
+                    }
+                    Label {
+                        text: "in "
+                    }
+
+                               }
 
                 // Cut List Table
                 ColumnLayout {
@@ -265,5 +311,42 @@ ApplicationWindow {
         }
     }
 
+
+    Connections {
+        target: backend
+
+        function onMessage(msg) {
+            console.log( msg)
+        }
+
+        function onDisplayStair(
+            total_rise, width_stair, actual_step_riser_height,
+            num_steps_risers, num_treads, tread_depth, total_run
+        ) {
+            console.log("✅ Signal received!")
+            console.log("  total_rise:", total_rise)
+            console.log("  width_stair:", width_stair)
+            console.log("  actual_step_riser_height:", actual_step_riser_height)
+            console.log("  num_steps_risers:", num_steps_risers)
+            console.log("  num_treads:", num_treads)
+            console.log("  tread_depth:", tread_depth)
+            console.log("  total_run:", total_run)
+            total_rise_label.text=total_rise
+            total_run_label.text=total_run
+            stair_width_label.text=width_stair
+
+            num_risers_label.text=num_steps_risers
+            risers_height_label.text=actual_step_riser_height
+
+            num_tread_label.text=num_treads
+            tread_depth_label.text=tread_depth
+
+        }
+        function onCutListChanged(list) {
+            root.setCutList(list)
+            setCutList(list)
+        }
+        
+    }
 
 }
