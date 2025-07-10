@@ -99,8 +99,12 @@ class Backend(QObject):
         result["width_stair"] = float(stair_width)
         pprint(result)
 
+        current_directory = os.getcwd()
+        print("Current Working Directory:", current_directory)
+        output_folder=f"{current_directory}/output/{job_name}/"
 
-        freecad_doc=FreecadDoc(doc_name=f"{job_name}_stair_stringer_cnc")
+
+        freecad_doc=FreecadDoc(doc_name=f"{job_name}_stair_stringer_cnc", output_folder=output_folder)
 
         doc=freecad_doc.doc
         

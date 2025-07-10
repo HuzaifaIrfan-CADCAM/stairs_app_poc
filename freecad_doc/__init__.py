@@ -10,20 +10,21 @@ from FreeCAD import Vector
 import os
 
 class FreecadDoc:
-    def __init__(self, doc_name:str):
+    def __init__(self, doc_name:str, output_folder:str):
         self.doc_name=doc_name
         self.doc = App.newDocument(doc_name)
         App.setActiveDocument(doc_name)
         App.ActiveDocument=App.getDocument(doc_name)
 
 
-        current_directory = os.getcwd()
-        print("Current Working Directory:", current_directory)
+        # current_directory = os.getcwd()
+        # print("Current Working Directory:", current_directory)
 
-        file_name=doc_name
-        output_folder=f"{current_directory}/output/{doc_name}/"
+        
+        # output_folder=f"{current_directory}/output/{doc_name}/"
         os.makedirs(output_folder, exist_ok=True)
 
+        file_name=doc_name
         self.output_folder=output_folder
         self.file_name=file_name
 
