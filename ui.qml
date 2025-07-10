@@ -12,8 +12,24 @@ ApplicationWindow {
     height: 600
     title: "Treads by Design"
 
+
     ListModel {
         id: cutListModel
+        ListElement {
+            part: "Treads"
+            qty: 6
+            dimensions: "34 1/2'' x 10"
+        }
+        ListElement {
+            part: "Risers"
+            qty: 7
+            dimensions: "34 1/2'' x 7 1/2''"
+        }
+        ListElement {
+            part: "Stringers"
+            qty: 2
+            dimensions: "16 3/4'' x 139''"
+        }
     }
 
     function setCutList(list) {
@@ -147,8 +163,8 @@ ApplicationWindow {
 
                     spacing: 10
                     Button {
-                        text: "Generate PDF"
-                        onClicked: backend.generate_pdf(job_name.text, builder_name.text, stair_width.text, total_rise.text)
+                        text: "Calculate"
+                        onClicked: backend.calculate_stair(job_name.text, builder_name.text, stair_width.text, total_rise.text)
                     }
                     Button {
                         text: "Export G-Code"
@@ -189,9 +205,51 @@ ApplicationWindow {
                     }
                 }
 
+                RowLayout {
+                    spacing: 10
+
+                    Label {
+                        text: "Total Rise"
+                    }
+                    Label {
+                        text:""
+                        id: total_rise_label
+                    }
+                    Label {
+                        text: "in "
+                    }
+                    
+                    Label {
+                        text: " Total Run"
+                    }
+                    Label {
+                        text:""
+                        id: total_run_label
+                    }
+                    Label {
+                        text: "in"
+                    }
+                }
+
+                RowLayout {
+                    spacing: 10
+                    Label {
+                        text: "Num Steps"
+                    }
+                    Label {
+                        text:""
+                        id: num_risers
+                    }
+                    Label {
+                        text: "in"
+                    }
+                }
+
                 // Cut List Table
                 ColumnLayout {
-                    spacing: 5
+
+                    Layout.fillHeight: true
+                    spacing: 10
 
                     Label {
                         text: "Cut List"
@@ -207,11 +265,5 @@ ApplicationWindow {
         }
     }
 
-    Connections {
-        target: backend
 
-        function cutListChanged(list) {
-            setCutList(list)
-        }
-    }
 }

@@ -21,7 +21,7 @@ class FreecadDoc:
         print("Current Working Directory:", current_directory)
 
         file_name=doc_name
-        output_folder=f"{current_directory}/output/"
+        output_folder=f"{current_directory}/output/{doc_name}/"
         os.makedirs(output_folder, exist_ok=True)
 
         self.output_folder=output_folder
