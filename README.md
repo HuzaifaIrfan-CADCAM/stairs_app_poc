@@ -3,9 +3,6 @@
   <p><h3 align="center">Desktop App for Stair Cut list preparation and Stringer G-Code Generation🚀</h3></p>
 </div>
 
-
-•[Upwork](https://www.upwork.com/jobs/~021942573542535756884)
-
 <hr>
 
 ## Demo Video
